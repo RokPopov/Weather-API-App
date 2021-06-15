@@ -9,10 +9,13 @@
  *
  */
 
-const baseApi = 'https://www.metaweather.com/api/location';
-const searchApi = `${baseApi}/search`;
+class fetchForecastApi {
+    constructor() {
+        this.baseApi = 'https://www.metaweather.com/api/location';
+        this.searchApi = `${this.baseApi}/search`;
+        this.addCorsHeader();
+    }
 
-class requestController {
     addCorsHeader() {
         $.ajaxPrefilter(options => {
             if (options.crossDomain && $.support.cors) {
@@ -22,14 +25,23 @@ class requestController {
     }
 
     getLocation() {
-        this.addCorsHeader();
-        $.getJSON(searchApi, { query: 'Amsterdam' }).done(data => this.getWeatherData(data[0].woeid));
+        $.getJSON(this.searchApi, { query: 'Amsterdam' }).done(data => this.getWeatherData(data[0].woeid));
     }
 
     getWeatherData(location) {
-        $.getJSON(`${baseApi}/${location}`).done(data => console.log(data));
+        $.getJSON(`${this.baseApi}/${location}`).done(data => console.log(data));
+    }
+}
+
+class requestController {
+    constructor() {
+        this.fetchForecastApi = new fetchForecastApi();
+        this.init();
+    }
+
+    init() {
+        this.fetchForecastApi.getLocation();
     }
 }
 
 const request = new requestController();
-request.getLocation();
