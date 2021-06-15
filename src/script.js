@@ -8,3 +8,28 @@
  *  [] 5. Add error/loading states and cover edge use cases
  *
  */
+
+const baseApi = 'https://www.metaweather.com/api/location';
+const searchApi = `${baseApi}/search`;
+
+class requestController {
+    addCorsHeader() {
+        $.ajaxPrefilter(options => {
+            if (options.crossDomain && $.support.cors) {
+                options.url = 'https://the-ultimate-api-challenge.herokuapp.com/' + options.url;
+            }
+        });
+    }
+
+    getLocation() {
+        this.addCorsHeader();
+        $.getJSON(searchApi, { query: 'Amsterdam' }).done(data => this.getWeatherData(data[0].woeid));
+    }
+
+    getWeatherData(location) {
+        $.getJSON(`${baseApi}/${location}`).done(data => console.log(data));
+    }
+}
+
+const request = new requestController();
+request.getLocation();
