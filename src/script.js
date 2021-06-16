@@ -24,8 +24,8 @@ class fetchForecastApi {
         });
     }
 
-    getLocation() {
-        $.getJSON(this.searchApi, { query: 'Amsterdam' }).done(data => this.getWeatherData(data[0].woeid));
+    getLocation(query) {
+        $.getJSON(this.searchApi, { query: query }).done(data => this.getWeatherData(data[0].woeid));
     }
 
     getWeatherData(location) {
@@ -83,11 +83,23 @@ class requestController {
     constructor() {
         this.fetchForecastApi = new fetchForecastApi();
         this.coreDomElements = new coreDomElements();
-        this.init();
+        this.addEventListener();
     }
 
-    init() {
-        this.fetchForecastApi.getLocation();
+    // init() {
+    //     this.fetchForecastApi.getLocation();
+    // }
+
+    onSubmit() {
+        const query = $('#search-query').val().trim();
+        this.fetchForecastApi.getLocation(query);
+    }
+
+    addEventListener() {
+        this.coreDomElements.searchForm.on('submit', e => {
+            e.preventDefault();
+            this.onSubmit();
+        });
     }
 }
 
